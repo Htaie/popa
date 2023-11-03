@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Card Swiper</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+  <ion-icon id="dislike" name="heart-dislike"></ion-icon>
+  <div id="swiper"></div>
+  <ion-icon id="like" name="heart"></ion-icon>
+  <p id="nickname"></p>
+  <ul id="likedAnimeList"></ul>
+  <ul id="userList"></ul>
+  <div id="matching-anime"></div>
+
+  <script src="./card.js"></script>
+  <script src="./script.js"></script>
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const nicknameDisplay = document.querySelector('#nickname');
+
+    const likedAnimeList = document.querySelector('#likedAnimeList');
+    const userList = document.querySelector('#userList');
+
+    socket.on('randomNickname', (randomNickname) => {
+      nicknameDisplay.textContent = `Your Nickname: ${randomNickname}`;
+    });
+
+    socket.on('userList', (usernames) => {
+      userList.innerHTML = '';
+      usernames.forEach((username) => {
+        const li = document.createElement('li');
+        li.textContent = username;
+        userList.appendChild(li);
+      });
+    });
+    socket.on('matchingAnime', function (data) {
+      const matchingAnimeElement = document.getElementById('matching-anime');
+      matchingAnimeElement.innerHTML = `
+    <h2>Matching Anime</h2>
+    <img src="${data.image}" alt="${data.name}">
+    <p>${data.name}</p>
+  `;
+    });
+
+
+
+  </script>
+</body>
+
+</html>
