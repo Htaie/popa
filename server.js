@@ -25,6 +25,12 @@ io.on("connection", (socket) => {
   likedAnime: [],
  };
 
+ const otherUser = {
+    socket: socket,
+    nickname: randomNickname,
+    likedAnime: [],
+ }
+
  connectedUsers[socket.id] = user;
 
  const usernames = Object.values(connectedUsers).map((u) => u.nickname);
@@ -47,27 +53,35 @@ io.on("connection", (socket) => {
  function compareLikedAnime(data) {
   Object.values(connectedUsers).forEach((otherUser) => {
    let isMatchFound = false;
-
-   otherUser.likedAnime.some((anime1) => {
-    return user.likedAnime.some((anime2) => {
+// расписываю сначала было some но чат гпт сказал что это не совсем правильно его юзать
+// потому сказал юзать фор ич , я попробовал найти одинаковые аниме и эта функция мне 
+// выдала что аниме совпали если попробовать с двумя разными ониме то напишет после двух 
+// лайков от двух юзеров сообщение второго условия это уже что-то как будто!
+   otherUser.likedAnime.forEach((anime1) => {
+    return user.likedAnime.forEach((anime2) => {
      if (anime1.id === anime2.id) {
-      console.log(`Аниме с id ${user.nickname} совпало:`);
+      console.log(`Аниме с id ${anime1.id} совпало:`);
       console.log(`Изображение: ${anime1.image}`);
       user.socket.emit("matchingAnime", {
        nickname: user.nickname,
        image: anime1.image,
        name: anime1.name,
       });
+      otherUser.socket.emit("matchingAnime", {
+        nickname: otherUser.nickname,
+        image: anime2.image,
+        name: anime2.name,
+      })
       isMatchFound = true;
 
       return true; // Stop iterating further
-     }
+     };
+    
+     if (!isMatchFound) {
+        console.log("No matching anime found.");
+       }
     });
    });
-
-   if (!isMatchFound) {
-    console.log("No matching anime found.");
-   }
   });
  }
 });
