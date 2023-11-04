@@ -48,22 +48,22 @@ io.on("connection", (socket) => {
   Object.values(connectedUsers).forEach((otherUser) => {
    let isMatchFound = false;
 
-//    otherUser.likedAnime.some((anime1) => {
-//     return user.likedAnime.some((anime2) => {
-//      if (anime1.id === anime2.id) {
-//       console.log(`Аниме с id ${user.nickname} совпало:`);
-//       console.log(`Изображение: ${anime1.image}`);
-//       user.socket.emit("matchingAnime", {
-//        nickname: user.nickname,
-//        image: anime1.image,
-//        name: anime1.name,
-//       });
-//       isMatchFound = true;
+   otherUser.likedAnime.some((anime1) => {
+    return user.likedAnime.some((anime2) => {
+     if (anime1.id === anime2.id) {
+      console.log(`Аниме с id ${user.nickname} совпало:`);
+      console.log(`Изображение: ${anime1.image}`);
+      user.socket.emit("matchingAnime", {
+       nickname: user.nickname,
+       image: anime1.image,
+       name: anime1.name,
+      });
+      isMatchFound = true;
 
-//       return true; // Stop iterating further
-//      }
-//     });
-//    });
+      return true; // Stop iterating further
+     }
+    });
+   });
 
    if (!isMatchFound) {
     console.log("No matching anime found.");
