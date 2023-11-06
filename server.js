@@ -15,76 +15,67 @@ app.get("/", (req, res) => {
 const connectedUsers = {};
 
 io.on("connection", (socket) => {
- console.log("Пользователь подключился");
+   console.log("Пользователь подключился");
+   const randomNickname = generateRandomNickname();
+ 
+   const user = {
+     socket: socket,
+     nickname: randomNickname,
+     likedAnime: [],
+   };
 
- const randomNickname = generateRandomNickname();
-
- const user = {
-  socket: socket,
-  nickname: randomNickname,
-  likedAnime: [],
- };
-
- const otherUser = {
-    socket: socket,
-    nickname: randomNickname,
-    likedAnime: [],
- }
-
- connectedUsers[socket.id] = user;
-
- const usernames = Object.values(connectedUsers).map((u) => u.nickname);
- io.emit("userList", usernames);
-
- socket.on("sendArray", (serializedData) => {
-  connectedUsers[socket.id].likedAnime = serializedData.likedAnime;
-
-  compareLikedAnime(connectedUsers[socket.id].likedAnime);
- });
-
- socket.on("disconnect", () => {
-  delete connectedUsers[socket.id];
-
-  const usernames = Object.values(connectedUsers).map((u) => u.nickname);
-  io.emit("userList", usernames);
- });
-
-
- function compareLikedAnime(data) {
-  Object.values(connectedUsers).forEach((otherUser) => {
-   let isMatchFound = false;
-// расписываю сначала было some но чат гпт сказал что это не совсем правильно его юзать
-// потому сказал юзать фор ич , я попробовал найти одинаковые аниме и эта функция мне 
-// выдала что аниме совпали если попробовать с двумя разными ониме то напишет после двух 
-// лайков от двух юзеров сообщение второго условия это уже что-то как будто!
-   otherUser.likedAnime.forEach((anime1) => {
-    return user.likedAnime.forEach((anime2) => {
-     if (anime1.id === anime2.id) {
-      console.log(`Аниме с id ${anime1.id} совпало:`);
-      console.log(`Изображение: ${anime1.image}`);
-      user.socket.emit("matchingAnime", {
-       nickname: user.nickname,
-       image: anime1.image,
-       name: anime1.name,
-      });
-      otherUser.socket.emit("matchingAnime", {
-        nickname: otherUser.nickname,
-        image: anime2.image,
-        name: anime2.name,
-      })
-      isMatchFound = true;
-
-      return true; // Stop iterating further
-     };
-    
-     if (!isMatchFound) {
-        console.log("No matching anime found.");
-       }
-    });
+   const mathes = []
+ 
+   connectedUsers[socket.id] = user;
+   updateUsersList();
+ 
+   socket.on("sendArray", (serializedData) => {
+     connectedUsers[socket.id].likedAnime = serializedData.likedAnime;
+     compareLikedAnime(connectedUsers[socket.id]); // Передаем объект пользователя
    });
-  });
- }
-});
+ 
+   socket.on("disconnect", () => {
+     console.log(`Пользователь ${connectedUsers[socket.id].nickname} отключился`);
+     delete connectedUsers[socket.id];
+     updateUsersList();
+   });
+ 
+   function compareLikedAnime(currentUser) {
+      Object.values(connectedUsers).forEach((otherUser) => {
+        if (otherUser.socket.id === currentUser.socket.id) {
+          // Пропускаем сравнение пользователя с самим собой
+          return;
+        }
+    
+        // Ищем первое совпадение в likedAnime
+        const match = currentUser.likedAnime.find(anime1 =>
+          otherUser.likedAnime.some(anime2 => anime1.id === anime2.id)
+        );
+    
+        if (match) {
+          // Нашли совпадение, отправляем уведомление обоим пользователям
+          console.log(`Аниме с id ${match.id} совпало:`);
+          currentUser.socket.emit("matchingAnime", {
+            nickname: otherUser.nickname,
+            image: match.image,
+            name: match.name,
+          });
+          otherUser.socket.emit("matchingAnime", {
+            nickname: currentUser.nickname,
+            image: match.image,
+            name: match.name,
+          });
+        } else {
+          console.log(`Совпадений аниме для пользователей ${currentUser.nickname} и ${otherUser.nickname} не найдено.`);
+        }
+      });
+    }
+ 
+   function updateUsersList() {
+     const usernames = Object.values(connectedUsers).map((u) => u.nickname);
+     io.emit("userList", usernames);
+   }
+ });
 
 server.listen(port, () => {
  console.log("Listening app at http://localhost:" + port);
