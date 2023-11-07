@@ -24,20 +24,18 @@ fetch('https://api.jikan.moe/v4/top/anime')
     function getRandomImageData() {
       const randomIndex = Math.floor(Math.random() * dataDisplay.length);
       const randomImage = dataDisplay[randomIndex];
-      return { imageUrl: randomImage.image, animeId: randomImage.id };
+      return { imageUrl: randomImage.image, animeId: randomImage.id, name: randomImage.name };
     }
-
     function appendNewCard() {
-      const { animeId, imageUrl } = getRandomImageData();
+      const { animeId, imageUrl, name } = getRandomImageData();
       const card = new Card({
         imageUrl: imageUrl,
         onDismiss: appendNewCard,
         onLike: () => {
           like.style.animationPlayState = 'running';
           like.classList.toggle('trigger');
-          user.likedAnime.push({ id: animeId, image: imageUrl});
+          user.likedAnime.push({ id: animeId, image: imageUrl, name: name });
           socket.emit('sendArray', user);
-          console.log(user.likedAnime)
         },
         onDislike: () => {
           dislike.style.animationPlayState = 'running';
@@ -46,7 +44,6 @@ fetch('https://api.jikan.moe/v4/top/anime')
       });
       swiper.append(card.element);
 
-      console.log(user.likedAnime);
       const cards = swiper.querySelectorAll('.card:not(.dismissing)');
       cards.forEach((card, index) => {
         card.style.setProperty('--i', index);
