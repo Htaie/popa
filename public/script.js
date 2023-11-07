@@ -17,7 +17,7 @@ fetch('https://api.jikan.moe/v4/top/anime')
   })
   .then((data) => {
     const dataDisplay = data.data.map((elem) => {
-      return { id: elem.mal_id, image: elem.images.jpg.image_url };
+      return { id: elem.mal_id, image: elem.images.jpg.large_image_url, name: elem.title};
     });
       appendNewCard();
 

@@ -24,7 +24,6 @@ io.on("connection", (socket) => {
      likedAnime: [],
    };
 
-   const mathes = []
  
    connectedUsers[socket.id] = user;
    updateUsersList();
