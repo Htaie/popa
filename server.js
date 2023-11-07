@@ -16,7 +16,6 @@ const connectedUsers = {};
 
 io.on("connection", (socket) => {
  console.log("Пользователь подключился");
-
  const randomNickname = generateRandomNickname();
 
  const user = {
@@ -24,52 +23,48 @@ io.on("connection", (socket) => {
   nickname: randomNickname,
   likedAnime: [],
  };
-
  connectedUsers[socket.id] = user;
-
- const usernames = Object.values(connectedUsers).map((u) => u.nickname);
- io.emit("userList", usernames);
+ updateUsersList();
 
  socket.on("sendArray", (serializedData) => {
   connectedUsers[socket.id].likedAnime = serializedData.likedAnime;
-
-  compareLikedAnime(connectedUsers[socket.id].likedAnime);
+  compareLikedAnime(connectedUsers[socket.id]); // Передаем объект пользователя
  });
 
  socket.on("disconnect", () => {
+  console.log(`Пользователь ${connectedUsers[socket.id].nickname} отключился`);
   delete connectedUsers[socket.id];
-
-  const usernames = Object.values(connectedUsers).map((u) => u.nickname);
-  io.emit("userList", usernames);
+  updateUsersList();
  });
 
-
- function compareLikedAnime(data) {
+ function compareLikedAnime(currentUser) {
   Object.values(connectedUsers).forEach((otherUser) => {
-   let isMatchFound = false;
+   if (otherUser.socket.id === currentUser.socket.id) {
+    return;
+   }
 
-   otherUser.likedAnime.some((anime1) => {
-    return user.likedAnime.some((anime2) => {
-     if (anime1.id === anime2.id) {
-      console.log(`Аниме с id ${user.nickname} совпало:`);
-      console.log(`Изображение: ${anime1.image}`);
-      user.socket.emit("matchingAnime", {
-       nickname: user.nickname,
-       image: anime1.image,
-       name: anime1.name,
-      });
-      isMatchFound = true;
+   const match = currentUser.likedAnime.find((anime1) =>
+    otherUser.likedAnime.some((anime2) => anime1.id === anime2.id)
+   );
 
-      return true; // Stop iterating further
-     }
+   if (match) {
+    currentUser.socket.emit("matchingAnime", {
+     nickname: otherUser.nickname,
+     image: match.image,
+     name: match.name,
     });
-   });
-
-   if (!isMatchFound) {
-    console.log("No matching anime found.");
+    otherUser.socket.emit("matchingAnime", {
+     nickname: currentUser.nickname,
+     image: match.image,
+     name: match.name,
+    });
    }
   });
-  s;
+ }
+
+ function updateUsersList() {
+  const usernames = Object.values(connectedUsers).map((u) => u.nickname);
+  io.emit("userList", usernames);
  }
 });
 
