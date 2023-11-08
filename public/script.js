@@ -7,17 +7,6 @@ const user = {
 };
 const serializedData = JSON.stringify(user);
 
-document.getElementById('dislike-button').addEventListener('click', function() {
-  dislike.style.animationPlayState = "running";
-  dislike.classList.toggle("trigger");
-  });
-  
-  document.getElementById('like-button').addEventListener('click', function() {
-    like.style.animationPlayState = "running";
-    like.classList.toggle("trigger");
-    user.likedAnime.push({ id: animeId, image: imageUrl, name: name });
-    socket.emit("sendArray", user);
-  });
 
 fetch("https://api.jikan.moe/v4/top/anime")
  .then((response) => {
@@ -35,6 +24,15 @@ fetch("https://api.jikan.moe/v4/top/anime")
    };
   });
   appendNewCard();
+
+  document.getElementById('dislike-button').addEventListener('click', function() {
+    console.log('dislike')
+  });
+    
+  document.getElementById('like-button').addEventListener('click', function() {
+    console.log('like')
+  });
+
 
   function getRandomImageData() {
    const randomIndex = Math.floor(Math.random() * dataDisplay.length);
