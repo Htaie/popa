@@ -55,10 +55,12 @@ body {
 }
 
 #like-button {
+  margin-top: 60%;
   margin-left: 60%;
 }
 
 #dislike-button {
+  margin-top: 60%;
   margin-left: 25%;
 }
 
@@ -87,7 +89,6 @@ body {
   font-size: 4vh;
   border-radius: 50%;
   padding: 10px;
-  margin-top: 55vh;
   position: absolute;
   z-index: 10;
   animation-name: animation1;

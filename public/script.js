@@ -8,11 +8,15 @@ const user = {
 const serializedData = JSON.stringify(user);
 
 document.getElementById('dislike-button').addEventListener('click', function() {
-    console.log('dislike');
+  dislike.style.animationPlayState = "running";
+  dislike.classList.toggle("trigger");
   });
   
   document.getElementById('like-button').addEventListener('click', function() {
-    console.log('like');
+    like.style.animationPlayState = "running";
+    like.classList.toggle("trigger");
+    user.likedAnime.push({ id: animeId, image: imageUrl, name: name });
+    socket.emit("sendArray", user);
   });
 
 fetch("https://api.jikan.moe/v4/top/anime")
