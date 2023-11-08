@@ -7,6 +7,14 @@ const user = {
 };
 const serializedData = JSON.stringify(user);
 
+document.getElementById('dislike-button').addEventListener('click', function() {
+    console.log('dislike');
+  });
+  
+  document.getElementById('like-button').addEventListener('click', function() {
+    console.log('like');
+  });
+
 fetch("https://api.jikan.moe/v4/top/anime")
  .then((response) => {
   if (!response.ok) {
