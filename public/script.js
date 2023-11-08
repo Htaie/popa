@@ -35,7 +35,7 @@ fetch("https://api.jikan.moe/v4/top/anime")
   }
   function appendNewCard() {
    const { animeId, imageUrl, name } = getRandomImageData();
-   const card = new Card({
+   const myCard = new ACard({
     imageUrl: imageUrl,
     onDismiss: appendNewCard,
     onLike: () => {
@@ -49,10 +49,10 @@ fetch("https://api.jikan.moe/v4/top/anime")
      dislike.classList.toggle("trigger");
     },
    });
-   swiper.append(card.element);
-   const cards = swiper.querySelectorAll(".card:not(.dismissing)");
-   cards.forEach((card, index) => {
-    card.style.setProperty("--i", index);
+   swiper.append(myCard.element);
+   const myCards = swiper.querySelectorAll(".my-card:not(.dismissing)");
+   myCards.forEach((myCard, index) => {
+    myCard.style.setProperty("--i", index);
    });
   }
  })

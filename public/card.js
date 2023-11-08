@@ -1,4 +1,4 @@
-class Card {
+class ACard {
   constructor({
     imageUrl,
     onDismiss,
@@ -24,12 +24,12 @@ class Card {
   }
 
   #init = () => {
-    const card = document.createElement('div');
-    card.classList.add('card');
+    const myCard = document.createElement('div');
+    myCard.classList.add('my-card');
     const img = document.createElement('img');
     img.src = this.imageUrl;
-    card.append(img);
-    this.element = card;
+    myCard.append(img);
+    this.element = myCard;
     if (this.#isTouchDevice()) {
       this.#listenToTouchEvents();
     } else {
