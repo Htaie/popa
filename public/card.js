@@ -49,6 +49,17 @@ class ACard {
 
     document.addEventListener('touchend', this.#handleTouchEnd);
     document.addEventListener('cancel', this.#handleTouchEnd);
+
+    const likeButton = document.getElementById('like-button');
+    const dislikeButton = document.getElementById('dislike-button');
+
+    if(likeButton) {
+      likeButton.addEventListener('click', () => this.#dismiss(1));
+    }
+
+    if(dislikeButton) {
+      dislikeButton.addEventListener('click', () => this.#dismiss(-1));
+    }
   }
 
   #listenToMouseEvents = () => {
@@ -65,6 +76,17 @@ class ACard {
     this.element.addEventListener('dragstart', (e) => {
       e.preventDefault();
     });
+
+    const likeButton = document.getElementById('like-button');
+    const dislikeButton = document.getElementById('dislike-button');
+
+    if(likeButton) {
+      likeButton.addEventListener('click', () => this.#dismiss(1));
+    }
+
+    if(dislikeButton) {
+      dislikeButton.addEventListener('click', () => this.#dismiss(-1))
+    }
   }
 
   #handleMove = (x, y) => {
