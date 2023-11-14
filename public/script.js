@@ -77,6 +77,10 @@ fetch("https://api.jikan.moe/v4/top/anime")
     myCard.style.setProperty("--i", index);
    });
   }
+
+  for (let i = 0; i < 4; i++) {
+    appendNewCard();
+  }
  })
  .catch((error) => {
   console.error("Fetch error:", error);
