@@ -28,7 +28,6 @@ fetch("https://api.jikan.moe/v4/top/anime")
 
   if (likeButton) {
     likeButton.addEventListener('click', () => {
-      appendNewCard();
       const { animeId, imageUrl, name } = getRandomImageData();
       user.likedAnime.push({ id: animeId, image: imageUrl, name: name });
       socket.emit('sendArray', user);
@@ -38,7 +37,6 @@ fetch("https://api.jikan.moe/v4/top/anime")
   
   if (dislikeButton) {
     dislikeButton.addEventListener('click', () => {
-      appendNewCard();
       console.log('button dislike');
       swiper.querySelector('.my-card:not(.dismissing)').classList.add('dislike-swipe');
     });
