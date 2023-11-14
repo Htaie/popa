@@ -47,18 +47,26 @@ class ACard {
       this.element.style.transition = 'transform 0s';
     });
 
-    document.addEventListener('touchend', this.#handleTouchEnd);
-    document.addEventListener('cancel', this.#handleTouchEnd);
+    document.addEventListener('touchend', () => {
+      this.#handleTouchEnd();
+      document.removeEventListener('touchmove', this.#handleTouchMove);
+    })
 
     const likeButton = document.getElementById('like-button');
     const dislikeButton = document.getElementById('dislike-button');
 
-    if(likeButton) {
-      likeButton.addEventListener('click', () => this.#dismiss(1));
+    if (likeButton) {
+      likeButton.addEventListener('click', () => {
+        console.log('Like button clicked');
+        // Добавьте здесь свою логику для кнопки "Like"
+      });
     }
-
-    if(dislikeButton) {
-      dislikeButton.addEventListener('click', () => this.#dismiss(-1));
+    
+    if (dislikeButton) {
+      dislikeButton.addEventListener('click', () => {
+        console.log('Dislike button clicked');
+        // Добавьте здесь свою логику для кнопки "Dislike"
+      });
     }
   }
 
@@ -70,7 +78,11 @@ class ACard {
       this.element.style.transition = 'transform 0s';
     });
 
-    document.addEventListener('mouseup', this.#handleMoveUp);
+    document.addEventListener('mouseup', () => {
+      if(this.#startPoint){
+        this.#handleMoveUp();
+      }
+    });
 
     // prevent card from being dragged
     this.element.addEventListener('dragstart', (e) => {
@@ -109,6 +121,9 @@ class ACard {
   }
 
   #handleMoveUp = () => {
+    if(this.#startPoint) {
+      this.#dismiss(this.#offsetX > 0 ? 1 : -1);
+    }
     this.#startPoint = null;
     document.removeEventListener('mousemove', this.#handleMouseMove);
     this.element.style.transform = '';

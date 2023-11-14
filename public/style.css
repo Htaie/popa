@@ -116,6 +116,16 @@ body {
   background-color: rgba(0, 0, 0, 1);
 }
 
+.like-swipe {
+  transition: transform 0.5s;
+  transform: translateX(200%) rotate(90deg);
+}
+
+.dislike-swipe {
+  transition: transform 0.5s;
+  transform: translateX(-200%) rotate(-90deg);
+}
+
 @keyframes animation1 {
 
   0%,
