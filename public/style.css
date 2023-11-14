@@ -118,12 +118,14 @@ body {
 
 .like-swipe {
   transition: transform 0.5s;
-  transform: translateX(200%) rotate(90deg);
+  transform: translateX(400%) rotate(90deg);
+  animation-timing-function: ease-in-out;
 }
 
 .dislike-swipe {
   transition: transform 0.5s;
-  transform: translateX(-200%) rotate(-90deg);
+  transform: translateX(-400%) rotate(-90deg);
+  animation-timing-function: ease-in-out;
 }
 
 @keyframes animation1 {

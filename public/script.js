@@ -25,12 +25,10 @@ fetch("https://api.jikan.moe/v4/top/anime")
     name: elem.title,
    };
   });
-  appendNewCard();
 
   if (likeButton) {
     likeButton.addEventListener('click', () => {
-      like.style.animationPlayState = 'running';
-      like.classList.toggle('trigger');
+      appendNewCard();
       const { animeId, imageUrl, name } = getRandomImageData();
       user.likedAnime.push({ id: animeId, image: imageUrl, name: name });
       socket.emit('sendArray', user);
@@ -40,9 +38,8 @@ fetch("https://api.jikan.moe/v4/top/anime")
   
   if (dislikeButton) {
     dislikeButton.addEventListener('click', () => {
+      appendNewCard();
       console.log('button dislike');
-      dislike.style.animationPlayState = 'running';
-      dislike.classList.toggle('trigger');
       swiper.querySelector('.my-card:not(.dismissing)').classList.add('dislike-swipe');
     });
   }
@@ -56,6 +53,8 @@ fetch("https://api.jikan.moe/v4/top/anime")
     name: randomImage.name,
    };
   }
+  appendNewCard();
+
   function appendNewCard() {
    const { animeId, imageUrl, name } = getRandomImageData();
    const myCard = new ACard({
