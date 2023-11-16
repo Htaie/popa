@@ -12,13 +12,20 @@
 </head>
 
 <body>
-  <ion-icon id="dislike" name="heart-dislike"></ion-icon>
-  <div id="swiper"></div>
-  <ion-icon id="like" name="heart"></ion-icon>
+  <div class="cardLD">
+    <div id="swiper">
+      <button type="button" class="btn btn-secondary" id="dislike-button">
+        <i id="dislike" class="fa-solid fa-xmark"></i>
+      </button>
+      <button type="button" class="btn btn-secondary" id="like-button">
+        <i id="like" class="fa-regular fa-heart"></i>
+      </button>
+    </div>
+    <div id="matching-anime"></div>
+  </div>
   <p id="nickname"></p>
   <ul id="likedAnimeList"></ul>
   <ul id="userList"></ul>
-  <div id="matching-anime"></div>
 
   <script src="./card.js"></script>
   <script src="./script.js"></script>
@@ -29,6 +36,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
     crossorigin="anonymous"></script>
+  <script src="https://kit.fontawesome.com/ee3fb97b02.js" crossorigin="anonymous"></script>  
   <script>
     const socket = io();
     const nicknameDisplay = document.querySelector('#nickname');

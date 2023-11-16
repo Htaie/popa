@@ -7,6 +7,9 @@ const user = {
 };
 const serializedData = JSON.stringify(user);
 
+const likeButton = document.getElementById('like-button');
+const dislikeButton = document.getElementById('dislike-button');
+
 fetch("https://api.jikan.moe/v4/top/anime")
  .then((response) => {
   if (!response.ok) {
@@ -22,7 +25,22 @@ fetch("https://api.jikan.moe/v4/top/anime")
     name: elem.title,
    };
   });
-  appendNewCard();
+
+  if (likeButton) {
+    likeButton.addEventListener('click', () => {
+      const { animeId, imageUrl, name } = getRandomImageData();
+      user.likedAnime.push({ id: animeId, image: imageUrl, name: name });
+      socket.emit('sendArray', user);
+      swiper.querySelector('.my-card:not(.dismissing)').classList.add('like-swipe');
+    });
+  }
+  
+  if (dislikeButton) {
+    dislikeButton.addEventListener('click', () => {
+      console.log('button dislike');
+      swiper.querySelector('.my-card:not(.dismissing)').classList.add('dislike-swipe');
+    });
+  }
 
   function getRandomImageData() {
    const randomIndex = Math.floor(Math.random() * dataDisplay.length);
@@ -33,9 +51,11 @@ fetch("https://api.jikan.moe/v4/top/anime")
     name: randomImage.name,
    };
   }
+  appendNewCard();
+
   function appendNewCard() {
    const { animeId, imageUrl, name } = getRandomImageData();
-   const card = new Card({
+   const myCard = new ACard({
     imageUrl: imageUrl,
     onDismiss: appendNewCard,
     onLike: () => {
@@ -49,11 +69,15 @@ fetch("https://api.jikan.moe/v4/top/anime")
      dislike.classList.toggle("trigger");
     },
    });
-   swiper.append(card.element);
-   const cards = swiper.querySelectorAll(".card:not(.dismissing)");
-   cards.forEach((card, index) => {
-    card.style.setProperty("--i", index);
+   swiper.append(myCard.element);
+   const myCards = swiper.querySelectorAll(".my-card:not(.dismissing)");
+   myCards.forEach((myCard, index) => {
+    myCard.style.setProperty("--i", index);
    });
+  }
+
+  for (let i = 0; i < 4; i++) {
+    appendNewCard();
   }
  })
  .catch((error) => {

@@ -1,4 +1,4 @@
-class Card {
+class ACard {
   constructor({
     imageUrl,
     onDismiss,
@@ -24,12 +24,12 @@ class Card {
   }
 
   #init = () => {
-    const card = document.createElement('div');
-    card.classList.add('card');
+    const myCard = document.createElement('div');
+    myCard.classList.add('my-card');
     const img = document.createElement('img');
     img.src = this.imageUrl;
-    card.append(img);
-    this.element = card;
+    myCard.append(img);
+    this.element = myCard;
     if (this.#isTouchDevice()) {
       this.#listenToTouchEvents();
     } else {
@@ -47,8 +47,27 @@ class Card {
       this.element.style.transition = 'transform 0s';
     });
 
-    document.addEventListener('touchend', this.#handleTouchEnd);
-    document.addEventListener('cancel', this.#handleTouchEnd);
+    document.addEventListener('touchend', () => {
+      this.#handleTouchEnd();
+      document.removeEventListener('touchmove', this.#handleTouchMove);
+    })
+
+    const likeButton = document.getElementById('like-button');
+    const dislikeButton = document.getElementById('dislike-button');
+
+    if (likeButton) {
+      likeButton.addEventListener('click', () => {
+        console.log('Like button clicked');
+        // Добавьте здесь свою логику для кнопки "Like"
+      });
+    }
+    
+    if (dislikeButton) {
+      dislikeButton.addEventListener('click', () => {
+        console.log('Dislike button clicked');
+        // Добавьте здесь свою логику для кнопки "Dislike"
+      });
+    }
   }
 
   #listenToMouseEvents = () => {
@@ -59,12 +78,27 @@ class Card {
       this.element.style.transition = 'transform 0s';
     });
 
-    document.addEventListener('mouseup', this.#handleMoveUp);
+    document.addEventListener('mouseup', () => {
+      if(this.#startPoint){
+        this.#handleMoveUp();
+      }
+    });
 
     // prevent card from being dragged
     this.element.addEventListener('dragstart', (e) => {
       e.preventDefault();
     });
+
+    const likeButton = document.getElementById('like-button');
+    const dislikeButton = document.getElementById('dislike-button');
+
+    if(likeButton) {
+      likeButton.addEventListener('click', () => this.#dismiss(1));
+    }
+
+    if(dislikeButton) {
+      dislikeButton.addEventListener('click', () => this.#dismiss(-1))
+    }
   }
 
   #handleMove = (x, y) => {
@@ -87,6 +121,9 @@ class Card {
   }
 
   #handleMoveUp = () => {
+    if(this.#startPoint) {
+      this.#dismiss(this.#offsetX > 0 ? 1 : -1);
+    }
     this.#startPoint = null;
     document.removeEventListener('mousemove', this.#handleMouseMove);
     this.element.style.transform = '';
